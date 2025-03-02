@@ -1,30 +1,25 @@
 package org.a_s.idm.domain.model
 
-import org.a_s.idm.utlis.formatDecimal
-
 data class DownloadEntry(
-    val name: String,
+    val id: Int = 0,
+    val url: String = "",
+    val path: String = "",
+    val fileName    : String = "",
+    var status: DownloadStatus = DownloadStatus.PENDING,
+    var downloadedBytes: Long = 0,
+    val totalBytes: Long = 0,
+    val resume: Boolean = false,
+    val addedDate: Long = System.currentTimeMillis(),
+    var completedDate: Long = 0,
     val downloadPage: String = "", //option
-    val url: String,
-    val path: String,
-    val resume: Boolean,
-    val size: Long,
-    var progressBytes: Long,
-    val addedDate: Long,
-    var completedDate: Long,
-    var status: DownloadStatus
 ) {
-    val isFinished = (size == progressBytes)
+    val isFinished
+        get() = totalBytes == downloadedBytes
 
-    val progress: String
-        get() = if (size > 0) {
-            (progressBytes.toDouble() * 100 / size).formatDecimal(2)
+    val progress: Int
+        get() = if (totalBytes > 0) {
+            (downloadedBytes * 100 / totalBytes).toInt()
         } else {
-            "0"
+            0
         }
 }
-
-enum class DownloadStatus {
-    PENDING, DOWNLOADING, COMPLETED, FAILED, PAUSED
-}
-
